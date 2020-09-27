@@ -66,6 +66,6 @@ int main(void) {
 			long temp2 = ((prevEd * (prevEd+1)) % mod) >> 1;
 			ans += ((temp1 - temp2) % mod);
 		}
-		cout << ans % mod << endl;
+		cout << (ans % mod) << endl;
 	}
 }
