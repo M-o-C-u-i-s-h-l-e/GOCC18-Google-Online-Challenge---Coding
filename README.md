@@ -1,1 +1,1 @@
-# GOCC18-Google-Online-Challenge---Coding
+# GOCC18-Google's-Online-Challenge---Coding
