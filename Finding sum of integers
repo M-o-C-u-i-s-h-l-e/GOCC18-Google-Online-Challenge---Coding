@@ -1,0 +1,71 @@
+You are given a integer A. Consider two integers A and A+1. Print the sum of the numbers that cannot be formed using any combination of A and A+1. Since the answer can be large, print the sum modulo 1e9+7.
+
+A combination of A and A+1 is represented as integer Z that can be denoted as x * A + y * (A+1) where both x and y are integers and x, y >= 0.
+
+
+
+Input format
+
+-> The first line contains T denoting the number of test cases.
+-> Each of the T lines contains a single integer A.
+
+
+
+Output format
+
+For each test case, print the sum of the numbers that cannot be formed using any combination of A and A+1 in a new line. Since the answer can be large, print the sum modulo 1e9+7.
+
+
+
+Constraints
+
+1 <= T <= 1e3
+1 <= A <= 1e4
+
+
+
+Sample input
+3
+2
+3
+4
+
+Sample output
+1
+8
+30
+
+
+
+Solution:-
+
+#include <bits/stdc++.h>
+using namespace std;
+#define endl '\n'
+
+long mod = 1e9+7;
+
+int main(void) {
+	ios_base::sync_with_stdio(false);
+	cin.tie(0);
+	cout.tie(0);
+
+	int t;
+	cin >> t;
+	while (t--) {
+		int n;
+		cin >> n;
+		long ans = (n * (n-1)) >> 1;
+		long prevSt = 0, prevEd = 0, curSt = n, curEd = n+1;
+		for (int i = n-1, j = 2; i > 0; --i, ++j) {
+			prevSt = curSt;
+			prevEd = curEd;
+			curSt = (curEd + i) % mod;
+			curEd = (curSt + j) % mod;
+			long temp1 = ((curSt * (curSt-1)) % mod) >> 1;
+			long temp2 = ((prevEd * (prevEd+1)) % mod) >> 1;
+			ans += ((temp1 - temp2) % mod);
+		}
+		cout << ans % mod << endl;
+	}
+}
