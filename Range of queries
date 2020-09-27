@@ -1,0 +1,103 @@
+You are given an array A with N integers. You are required to answer Q queries of the following type: L R
+
+Determine the count of distinct prime numbers that divides all the array values from index L to R.
+
+Note: Consider 1-based indexing.
+
+
+
+Input format
+
+-> The first line contains an integer T denoting the number of test cases.
+-> The first line of each test case contains an integer N.
+-> The second line of each test case contains N space seperated integers denoting A.
+-> The third line of each test case contains an integer Q.
+-> Next Q lines of each test case contains two space seperated integers denoting the queries.
+
+
+
+Output format
+
+For each test case, print Q integers in seperate line denoting the answer to the queries.
+
+
+
+Constraints
+
+1 <= T <= 5
+1 <= N, Q <= 1e5
+1 <= A[i] <= 1e5
+1 <= L <= R <= N
+
+
+
+Sample input
+1
+6
+4 6 3 18 36 54
+3
+1 2
+3 6
+4 6
+
+Sample output
+1
+1
+2
+
+
+
+Solution:-
+
+from math import gcd, ceil, log2, pow
+
+def getMid(s, e):
+    return (s + int((e-s) / 2))
+
+def constructGcdUtil(arr, ss, se, st, si):
+    if (ss == se):
+        st[si] = arr[ss]
+        return arr[ss]
+    mid = getMid(ss, se)
+    st[si] = gcd(constructGcdUtil(arr, ss, mid, st, si*2+1), constructGcdUtil(arr, mid+1, se, st, si*2+2))
+    return st[si]
+
+def constructGcd(arr, n):
+    x = int(ceil(log2(n)))
+    max_size = 2 * int(pow(2, x) - 1)
+    st = [0 for i in range(max_size)]
+    constructGcdUtil(arr, 0, n-1, st, 0)
+    return st
+
+def getGcdUtil(st, ss, se, qs, qe, si):
+    if (qs <= ss and qe >= se):
+        return st[si]
+    if (se < qs or ss > qe):
+        return 0
+    mid = getMid(ss, se)
+    return gcd(getGcdUtil(st, ss, mid, qs, qe, 2*si+1), getGcdUtil(st, mid+1, se, qs, qe, 2*si+2))
+
+def getGcd(st, n, qs, qe):
+    if (qs < 0 or qe > n - 1 or qs > qe):
+        return -1
+    return getGcdUtil(st, 0, n-1, qs, qe, 0)
+
+def sieve():
+    global primeCount, n
+    for i in range(2, n):
+        if primeCount[i] == 0:
+            for j in range(i, n, i):
+                primeCount[j] += 1
+            primeCount[i] = 1
+
+n = 100001
+primeCount = [0 for i in range(n)]
+sieve()
+for _ in range(int(input())):
+    n = int(input())
+    arr = list(map(int, input().split()))
+    q = int(input())
+    st = constructGcd(arr, n)
+    for tc in range(q):
+        l, r = map(int, input().split())
+        print(primeCount[getGcd(st, n, l-1, r-1)])
